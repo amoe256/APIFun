@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width", initial-scale="1.0">
+    <meta charset="UTF-8">
+    <meta name="Author" content="Andreas Moe">
+    <meta name="Date" content="4/7/2020">
+    <meta name=Assignment content="Comp20-10">
+    <meta name="Description" content="API Fun">
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <title>
+        API Fun
+    </title>
+    <script language="javascript">
+        function i_need_a_drink() {
+            // Create request object
+            drinkReq = new XMLHttpRequest();
+            console.log("1 - request object created");
 
+            // Set URL
+            drinkReq.open("GET", "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=Moscow%20Mule", true);
+            console.log("2 - opened request file");
+
+            // Set event handler
+            drinkReq.onreadystatechange = function() {
+                console.log("3 - state changed");
+                if (drinkReq.readyState == 4 && drinkReq.status == 200) {
+                    // wait for done/success
+                    result = drinkReq.responseText;
+                    drink = JSON.parse(result);
+                    ingredient1 = drink["drinks"]["0"]["strIngredient1"];
+                    ingredient2 = drink["drinks"]["0"]["strIngredient2"];
+                    ingredient3 = drink["drinks"]["0"]["strIngredient3"];
+                    document.getElementById("drink").innerHTML = "Here's what you need to make a Moscow Mule: " + "<br>" + ingredient1 + ", " + ingredient2 + ", " + ingredient3;
+                }
+                else if (drinkReq.readystate == 4 && drinkReq.status != 200) {
+                    document.getElementById("drink").innerHTML = "Something went wrong! We don't know how to make your drink!";
+                }
+                else if (drinkReq.readyState == 3) {
+                    document.getElementById("drink").innerHTML = "We're working on it. Check back soon.";
+                }
+            }
+
+            // Fire off request
+            drinkReq.send();
+            console.log("4 - request sent");
+        }
+    </script>
+</head>
+<body onload="i_need_a_drink()">
+    <h1>Moscow Mule Ingredients</h1>
+    <div id="drink">Looking up ingredients...</div>
+</body>
